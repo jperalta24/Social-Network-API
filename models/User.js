@@ -29,13 +29,15 @@ const userSchema = new Schema({
     {
         toJSON: {
             virtuals: true,
+            getters: true,
         },
-        id: true,
+        id: false,
     }
 );
 
+// ? checks to see if friends exist
 userSchema.virtual('friendCount').get(function () {
-    return this.friends.length;
+    return this.friends?.length;
 });
 
 const User = model('user', userSchema);
