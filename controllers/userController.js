@@ -1,12 +1,14 @@
 const { ObjectId } = require('mongoose').Types;
-const { User, Thought } = require('../models');
+const { User, Thought, } = require('../models')
 
 module.exports = {
     // get all users
 
     getUsers: async function getUsers(req, res) {
         try {
-            const users = await User.find()
+            const users = await User.find(
+                
+            )
             !users ? res.status(404).json('no users found') : res.status(200).json(users)
         }
         catch (err) {
@@ -53,14 +55,14 @@ module.exports = {
             res.status(500).json(err);
         }
     },
-
+    // delete user by id and delete all associated thoughts
     deleteUser: async function deleteUser(req, res) {
         try {
             const deletedUser = await User.findByIdAndDelete(req.params.id);
             !deletedUser 
             ? res.status(404).json("User not found")
             : await Thought.deleteMany({_id: { $in: deletedUser.thoughts}})
-                ? res.status(200).json("User successfully deleted")
+                ? res.status(200).json("User & thoughts successfully deleted")
                 : res.status(500).json("Error deleting user's thoughts");
         } catch (err) {
             res.status(500).json(err);
@@ -75,7 +77,7 @@ module.exports = {
                 { $addToSet: { friends: req.params.friendId } },
                 { runValidators: true, new: true }
             )
-            !user ? res.status(404).json('no users found') : res.status(200).json(user)
+            !user ? res.status(404).json('no users found') : res.status(200).json("new friend added to your account")
         }
         catch (err) {
             res.status(500).json(err)
