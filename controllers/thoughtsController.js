@@ -65,11 +65,11 @@ module.exports = {
     addReaction: async function addReaction(req, res) {
         try {
             const newReaction = await Thought.findByIdAndUpdate(
-                req.params.id,
-                {$addToSet: {reactions: req.body}},
-                { runValidators: true, new: true }
-                )
-                !newReaction ? res.status(404).json('Cannot find thought') : res.status(200).json(newReaction)
+                req.params.thoughtId,
+                { $addToSet: { reactions: req.body } },
+                { new: true }
+            )
+            !newReaction ? res.status(404).json('Cannot find thought') : res.status(200).json(newReaction)
         } catch (err) {
             res.status(500).json(err)
         }
@@ -77,9 +77,16 @@ module.exports = {
 
     deleteReaction: async function deleteReaction(req, res) {
         try {
-            const deleteReaction = await Thought.findByIdAndUpdate(req.params.id)
+            const deleteReaction = await Thought.findByIdAndUpdate(
+                req.params.thoughtId,
+                { $pull: { reactions: { _id: req.params.reactionId } } },
+                { runValidators: true, new: true }
+            )
+            !deleteReaction
+                ? res.status(404).json('reaction not found')
+                : res.status(200).json(deleteReaction)
         } catch (err) {
-            
+            res.status(500).json(err)
         }
     }
 

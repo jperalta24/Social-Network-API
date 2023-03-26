@@ -94,7 +94,7 @@ module.exports = {
             !unFriend ? res.status(404).json('user not found') : res.status(200).json(unFriend)
         }
         catch (err) {
-            res.status(500).json
+            res.status(500).json(err)
         }
     }
 }
